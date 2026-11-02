@@ -723,45 +723,66 @@
         font-size: 0.86rem;
       }
     }
+    .settings-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 12px 0; }
+    .settings-row select { min-height: 44px; max-width: 100%; }
+    .x-share, .x-share:hover, .x-share:active, .x-share:focus-visible {
+      background: #000; color: #fff; min-height: 44px; white-space: normal;
+    }
+    .ranking-link { display: block; text-align: center; text-decoration: none; min-height: 44px; }
+    #copyPanel[hidden], #restoreResultButton[hidden] { display: none; }
   </style>
 </head>
 <body>
   <main id="app" class="app">
     <section id="homeScreen" class="screen home-screen active">
       <div class="card home-card">
-        <p class="eyebrow">60秒耐久スコアゲーム</p>
+        <p class="eyebrow" data-i18n="tagline">60秒から始まる耐久スコアゲーム</p>
         <h1>🌠夢を見たんだけどさ🌠</h1>
         <div id="bestScoreBox" class="best-box">ベストスコア：まだありません</div>
-        <p class="lead">夜空から降ってくる流星を避けながら、赤い流星を壊し、🍶を拾って生きのびるゲームです。</p>
+        <p class="lead" data-i18n="intro">夜空から降ってくる流星を避けながら、赤い流星を壊し、🍶を拾って生きのびるゲームです。</p>
         <div class="rule-box">
-          <p><strong>操作：</strong>下の地面エリアをタップ・スワイプすると、👤がその位置に動きます。指を離すと、その場に残ります。</p>
-          <p><strong>青白い流星 🔵✦：</strong>👤に当たると -500pt。ゲームは続きます。</p>
-          <p><strong>赤い流星 🔴✦：</strong>上の夜空エリアでタップして壊します。壊せず地面に落ちると -2000pt、👤に当たると -3000pt。</p>
-          <p><strong>🛰️：</strong>見えている時だけタップできます。成功で残り時間 +4秒、逃すと -3秒。</p>
-          <p><strong>🍶：</strong>👤で受け取ると +1500pt。地面に落とすと -3000pt。</p>
-          <p class="small-note">生き残ると1秒ごとに +100pt。ベストスコアはこのブラウザ内に保存されます。</p>
+          <p data-i18n="controls"><strong>操作：</strong>下の地面エリアをタップ・スワイプすると、👤がその位置に動きます。指を離すと、その場に残ります。</p>
+          <p data-i18n="blueRule"><strong>青白い流星 🔵✦：</strong>👤に当たると -500pt。ゲームは続きます。</p>
+          <p data-i18n="redRule"><strong>赤い流星 🔴✦：</strong>上の夜空エリアでタップして壊します。壊せず地面に落ちると -2000pt、👤に当たると -3000pt。</p>
+          <p data-i18n="satelliteRule"><strong>🛰️：</strong>見えている時だけタップできます。成功で残り時間 +4秒、逃すと -3秒。</p>
+          <p data-i18n="sakeRule"><strong>🍶：</strong>👤で受け取ると +1500pt。地面に落とすと -3000pt。</p>
+          <p class="small-note" data-i18n="survivalRule">生き残ると1秒ごとに +100pt。ベストスコアはこのブラウザ内に保存されます。</p>
+        </div>
+        <div class="settings-row">
+          <label for="languageSelect" data-i18n="language">言語</label>
+          <select id="languageSelect"></select>
+          <label for="soundEnabled"><input id="soundEnabled" type="checkbox" checked><span data-i18n="sound">効果音</span></label>
+          <label for="soundVolume" data-i18n="volume">音量</label>
+          <input id="soundVolume" type="range" min="0" max="1" step="0.05" value="0.3">
+        </div>
+        <div class="name-box">
+          <label for="playerNameInput" data-i18n="name">名前（任意）</label>
+          <input id="playerNameInput" class="name-input" type="text" maxlength="16" autocomplete="nickname" aria-describedby="namePrivacy">
+          <p id="namePrivacy" class="small-note" data-i18n="namePrivacy">名前を入力すると、名前と記録がランキングに公開されます。空欄でも遊べます。</p>
         </div>
         <div class="button-stack">
-          <button id="startButton" class="primary-button" type="button">ゲームスタート</button>
-          <button id="shareGameButton" class="secondary-button" type="button">ゲームをシェア</button>
-          <button id="otherGamesButton" class="secondary-button" type="button">その他のゲーム</button>
+          <button id="restoreResultButton" class="secondary-button" type="button" hidden></button>
+          <button id="startButton" class="primary-button" type="button" data-i18n="start">ゲームスタート</button>
+          <button id="shareGameButton" class="secondary-button x-share" type="button" data-i18n="share">Xでシェア</button>
+          <a class="secondary-button ranking-link" data-i18n="ranking" href="https://chameleonjp-lab.github.io/chameleonjp_lab/ranking.html?game=yume_wo_mitandakedosa" target="_blank" rel="noopener noreferrer">ランキング</a>
+          <button id="otherGamesButton" class="secondary-button" type="button" data-i18n="otherGames">その他のゲーム</button>
         </div>
       </div>
     </section>
 
     <section id="gameScreen" class="screen game-screen">
       <header class="game-hud">
-        <div class="hud-item">残り <span id="timeLeftText">60.0</span>秒</div>
-        <div class="hud-item">スコア <span id="scoreText">0</span>pt</div>
-        <button id="retireButton" class="retire-button" type="button">リタイア</button>
+        <div class="hud-item"><span data-i18n="remaining">残り時間</span> <span id="timeLeftText">60.0</span><span data-i18n="seconds">秒</span></div>
+        <div class="hud-item"><span data-i18n="score">スコア</span> <span id="scoreText">0</span><span data-i18n="points">点</span></div>
+        <button id="retireButton" class="retire-button" type="button" data-i18n="retire">リタイア</button>
       </header>
 
       <div id="stage" class="stage">
         <div id="skyArea" class="sky-area">
-          <div class="area-label sky-label">夜空：🔴✦と🛰️をタップ</div>
+          <div class="area-label sky-label" data-i18n="skyHint">夜空：🔴✦と🛰️をタップ</div>
         </div>
         <div id="groundArea" class="ground-area">
-          <div class="area-label ground-label">地面：タップ・スワイプで👤移動</div>
+          <div class="area-label ground-label" data-i18n="groundHint">地面：タップ・スワイプで👤移動</div>
         </div>
         <svg id="trailLayer" class="trail-layer" aria-hidden="true"></svg>
         <div id="entityLayer" class="entity-layer"></div>
@@ -772,48 +793,48 @@
 
     <section id="resultScreen" class="screen result-screen">
       <div class="card result-card">
-        <p class="eyebrow">結果</p>
+        <p class="eyebrow" data-i18n="result">結果</p>
         <h2 id="resultTitle">クリア</h2>
         <div id="finalScoreBox" class="final-score">0pt</div>
+        <p id="resultStorage" class="small-note" aria-live="polite"></p>
+        <div class="button-stack">
+          <button id="shareResultButton" class="primary-button x-share" type="button" data-i18n="share">Xでシェア</button>
+          <a class="secondary-button ranking-link" data-i18n="ranking" href="https://chameleonjp-lab.github.io/chameleonjp_lab/ranking.html?game=yume_wo_mitandakedosa" target="_blank" rel="noopener noreferrer">ランキング</a>
+          <button id="restartButton" class="secondary-button" type="button" data-i18n="replay">再ゲーム</button>
+          <button id="finishButton" class="secondary-button" type="button" data-i18n="home">ゲーム終了</button>
+        </div>
         <div id="rankingBox" class="ranking-box">
-          <p class="eyebrow">ランキング</p>
+          <p class="eyebrow" data-i18n="ranking">ランキング</p>
           <div id="rankingSubmitStatus" class="ranking-message">結果確定後にランキングへ送信します。</div>
           <div id="rankingSummary" class="ranking-summary"></div>
           <div class="ranking-tabs">
-            <button id="bestRankingTab" class="ranking-tab active" type="button">最高スコア</button>
-            <button id="firstRankingTab" class="ranking-tab" type="button">初回スコア</button>
+            <button id="bestRankingTab" class="ranking-tab active" type="button" data-i18n="best">最高スコア</button>
+            <button id="firstRankingTab" class="ranking-tab" type="button" data-i18n="first">初回スコア</button>
           </div>
+          <p id="rankingReadStatus" class="ranking-message" aria-live="polite"></p>
           <div id="rankingList" class="ranking-list"></div>
+          <button id="rankingRetryButton" class="secondary-button" type="button" data-i18n="retryRead">ランキングを再読み込み</button>
         </div>
         <div id="resultDetails" class="result-details"></div>
-        <div class="button-stack">
-          <button id="shareResultButton" class="primary-button" type="button">ゲーム結果をシェア</button>
-          <button id="restartButton" class="secondary-button" type="button">再ゲーム</button>
-          <button id="finishButton" class="secondary-button" type="button">ゲーム終了</button>
-        </div>
       </div>
     </section>
   </main>
 
 
-  <div id="nameModal" class="name-modal" aria-hidden="true">
-    <div class="name-modal-card" role="dialog" aria-modal="true" aria-labelledby="nameModalTitle">
-      <p class="eyebrow">ランキング名</p>
-      <h2 id="nameModalTitle">名前を入力してください</h2>
-      <p class="small-note">この名前でランキングに送信します。名前はこのブラウザ内に保存されます。</p>
-      <div class="name-box">
-        <label for="playerNameInput">表示名</label>
-        <input id="playerNameInput" class="name-input" type="text" maxlength="16" autocomplete="nickname" placeholder="例：カメレオン">
-      </div>
-      <div class="button-stack">
-        <button id="nameStartButton" class="primary-button" type="button">この名前で開始</button>
-        <button id="nameCancelButton" class="secondary-button" type="button">戻る</button>
-      </div>
-    </div>
-  </div>
-
+  <section id="copyPanel" hidden aria-labelledby="copyPanelTitle" style="position:fixed;inset:10%;z-index:1000;background:#101a31;padding:16px;overflow:auto">
+    <h2 id="copyPanelTitle" data-i18n="copyLabel">共有文</h2>
+    <p id="copyPanelHint" data-i18n="copyFailed">コピーできませんでした。共有文を選んでコピーしてください。</p>
+    <textarea id="copyPanelText" readonly style="width:100%;min-height:12em"></textarea>
+    <button id="copyPanelClose" type="button" class="secondary-button" data-i18n="copyClose">閉じる</button>
+  </section>
   <div id="toast" class="toast" aria-live="polite"></div>
 
+  <script src="i18n-dictionary.js"></script>
+  <script src="i18n-runtime.js"></script>
+  <script src="common-state.js"></script>
+  <script src="share.js"></script>
+  <script src="audio.js"></script>
+  <script src="normal-score-ack8.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     (() => {
@@ -837,15 +858,21 @@
       const FIRST_SCORE_LABEL = "初回スコア";
       const BEST_SCORE_LABEL = "最高スコア";
       const RED_TAP_BONUS = 34;
+      const clientStorage = { getItem: key => window.localStorage.getItem(key), setItem: (key, value) => window.localStorage.setItem(key, value) };
+      const i18n = YumeI18n.createI18n({ dictionary: YumeDictionary, storage: clientStorage, browserLanguages: navigator.languages || [navigator.language] });
+      const t = (key, values) => i18n.text(key, values);
+      const sound = YumeAudio.createAudio({ storage: clientStorage,
+        createContext: () => { const Audio = window.AudioContext || window.webkitAudioContext; if (!Audio) throw new Error("Audio unavailable"); return new Audio(); },
+        now: () => performance.now() });
+      let soundStats = null;
+      let warned = false;
+
 
       const homeScreen = document.getElementById("homeScreen");
       const gameScreen = document.getElementById("gameScreen");
       const resultScreen = document.getElementById("resultScreen");
       const bestScoreBox = document.getElementById("bestScoreBox");
-      const nameModal = document.getElementById("nameModal");
       const playerNameInput = document.getElementById("playerNameInput");
-      const nameStartButton = document.getElementById("nameStartButton");
-      const nameCancelButton = document.getElementById("nameCancelButton");
       const startButton = document.getElementById("startButton");
       const shareGameButton = document.getElementById("shareGameButton");
       const otherGamesButton = document.getElementById("otherGamesButton");
@@ -934,10 +961,10 @@
       }
 
       function showHome() {
-        closeNameModal();
         stopLoop();
         clearEntities();
         updateBestScoreBox();
+        refreshRecovery();
         showScreen(homeScreen);
       }
 
@@ -967,14 +994,14 @@
       function updateBestScoreBox() {
         const data = getBestData();
         if (data.hasClear && Number.isFinite(data.bestScore)) {
-          bestScoreBox.textContent = "ベストスコア：" + formatNumber(data.bestScore) + "pt";
+          bestScoreBox.textContent = t("bestValue", { score: formatNumber(data.bestScore) + " " + t("points") });
           return;
         }
         if (data.hadRetire) {
-          bestScoreBox.textContent = "ベストスコア：リタイア";
+          bestScoreBox.textContent = t("bestRetire");
           return;
         }
-        bestScoreBox.textContent = "ベストスコア：まだありません";
+        bestScoreBox.textContent = t("bestEmpty");
       }
 
       function saveClearScore(score) {
@@ -1053,20 +1080,11 @@
       }
 
       function handleStartButton() {
-        const savedName = getSavedRankingName();
-        if (savedName) {
-          if (playerNameInput) playerNameInput.value = savedName;
-          startGame();
-          return;
-        }
-        openNameModal();
+        startGame();
       }
 
       function getPlayerName() {
-        const raw = playerNameInput ? playerNameInput.value : "";
-        const inputName = raw.trim().replace(/\s+/g, " ").slice(0, 16);
-        const savedName = getSavedRankingName();
-        return inputName || savedName || "ななし";
+        return YumeCommonState.normalizeName(playerNameInput ? playerNameInput.value : "");
       }
 
       function saveRankingName() {
@@ -1081,13 +1099,13 @@
       }
 
       function formatRankingScore(value) {
-        const numeric = Number(value);
-        if (!Number.isFinite(numeric)) return "-";
+        if (typeof value !== "number" || !Number.isFinite(value)) return "-";
+        const numeric = value;
         const displayValue = numeric / SCORE_SCALE;
-        return displayValue.toLocaleString("ja-JP", {
+        return displayValue.toLocaleString(i18n.getLocale(), {
           minimumFractionDigits: SCORE_DECIMALS,
           maximumFractionDigits: SCORE_DECIMALS
-        }) + SCORE_UNIT;
+        }) + " " + t("points");
       }
 
       function normalizeRpcRow(result) {
@@ -1106,22 +1124,37 @@
         const targetResult = result;
 
         if (!result || result.resultType !== "clear") {
-          renderRankingUnavailable("リタイア時はランキング送信しません。");
+          if (result) result.deliveryKey = "retireNoSend";
+          renderRankingUnavailable(t("retireNoSend"));
+          if (result) await requestRankingsForResult(result);
+          return;
+        }
+        if (!result.participation || !result.participation.participates) {
+          result.deliveryKey = "anonymous";
+          renderRankingUnavailable(t("anonymous"));
+          await requestRankingsForResult(result);
           return;
         }
         if (!state || state.scoreSubmitted) return;
 
-        const client = getSupabaseClient();
+        let client = null;
+        try { client = getSupabaseClient(); } catch (_) { /* Keep the visible result; no submit was attempted. */ }
         if (!client) {
-          renderRankingUnavailable("ランキング機能は準備中です。Publishable keyを設定すると送信できます。");
+          result.deliveryKey = "rankingUnavailable";
+          renderRankingUnavailable(t("rankingUnavailable"));
           return;
         }
 
         state.scoreSubmitted = true;
-        const playerName = saveRankingName();
-        const scoreForSubmit = Math.round(result.score * SCORE_SCALE);
+        const playerName = result.participation.name;
+        const currentScore = result.score;
+        const scoreForSubmit = Math.round(currentScore * SCORE_SCALE);
+        const expectedAck = Object.freeze({
+          gameSlug: GAME_SLUG, scoreOrder: SCORE_ORDER, displayName: playerName, score: scoreForSubmit
+        });
 
-        rankingSubmitStatus.textContent = "ランキングへ送信中です…";
+        result.deliveryKey = "sending";
+        rankingSubmitStatus.textContent = t("sending");
         rankingSummary.innerHTML = "";
         rankingList.innerHTML = "";
 
@@ -1136,46 +1169,38 @@
           if (error) throw error;
           if (lastResult !== targetResult) return;
 
-          const row = normalizeRpcRow(data);
-          const firstScore = pickField(row, [
-            "result_first_score",
-            "first_score",
-            "first_try_score",
-            "initial_score"
-          ], null);
-          const bestScore = pickField(row, [
-            "result_best_score",
-            "best_score",
-            "high_score"
-          ], null);
-          const playCount = pickField(row, [
-            "result_play_count",
-            "play_count",
-            "plays_count",
-            "total_plays"
-          ], null);
+          const ack = validateNormalScoreAck8(data, expectedAck);
+          if (!ack.ok) throw new Error("Unconfirmed score response");
+          // Shape/name/score consistency only; not identity or idempotency proof.
+          const row = ack.receipt;
+          const firstScore = row.result_first_score;
+          const bestScore = row.result_best_score;
+          const playCount = row.result_play_count;
 
-          rankingSubmitStatus.textContent = "ランキングへ送信しました。";
-          renderRankingSummary(result.score, firstScore, bestScore, playCount);
+          result.deliveryKey = "sent";
+          rankingSubmitStatus.textContent = t("sent");
+          result.summary = [firstScore, bestScore, playCount];
+          renderRankingSummary(currentScore, firstScore, bestScore, playCount);
 
-          await loadRankingLists(client, targetResult);
+          await requestRankingsForResult(targetResult);
           if (lastResult !== targetResult) return;
         } catch (error) {
-          console.error(error);
           if (lastResult !== targetResult) return;
-          renderRankingUnavailable("ランキング送信に失敗しました。時間をおいて再確認してください。");
+          result.deliveryKey = "sendFailed";
+          renderRankingUnavailable(t("sendFailed"));
+          await requestRankingsForResult(targetResult);
         }
       }
 
       function renderRankingSummary(currentScore, firstScore, bestScore, playCount) {
         rankingSummary.innerHTML = "";
         const rows = [
-          ["今回のスコア", formatRankingScore(currentScore)],
-          [FIRST_SCORE_LABEL, firstScore === null ? "-" : formatRankingScore(firstScore)],
-          [BEST_SCORE_LABEL, bestScore === null ? "-" : formatRankingScore(bestScore)]
+          [t("current"), formatRankingScore(currentScore)],
+          [t("first"), firstScore === null ? "-" : formatRankingScore(firstScore)],
+          [t("best"), bestScore === null ? "-" : formatRankingScore(bestScore)]
         ];
         if (playCount !== null && playCount !== undefined) {
-          rows.push(["プレイ回数", String(playCount) + "回"]);
+          rows.push([t("plays"), String(playCount) + " " + t("times")]);
         }
 
         rows.forEach((row) => {
@@ -1191,18 +1216,47 @@
         });
       }
 
-      async function loadRankingLists(client, targetResult) {
+      let rankingReadVersion = 0;
+      function renderRankingReadState(targetResult) {
+        if (lastResult !== targetResult) return;
+        const readStatus = document.getElementById("rankingReadStatus");
+        const retry = document.getElementById("rankingRetryButton");
+        readStatus.textContent = targetResult.rankingState === "loading" ? t("rankingLoading") : targetResult.rankingState === "failed" ? t("rankingFailed") : "";
+        retry.disabled = targetResult.rankingState === "loading";
+        if (targetResult.rankingState !== "ready") rankingList.innerHTML = "";
+      }
+
+      async function requestRankingsForResult(targetResult) {
+        if (!targetResult || lastResult !== targetResult) return;
+        const requestId = ++rankingReadVersion;
+        targetResult.rankingState = "loading";
+        renderRankingReadState(targetResult);
+        try {
+          const client = getSupabaseClient();
+          if (!client) throw new Error("Ranking client unavailable");
+          await loadRankingLists(client, targetResult, requestId);
+          if (lastResult !== targetResult || requestId !== rankingReadVersion) return;
+          targetResult.rankingState = "ready";
+        } catch (_) {
+          if (lastResult !== targetResult || requestId !== rankingReadVersion) return;
+          targetResult.rankingState = "failed";
+        }
+        renderRankingReadState(targetResult);
+      }
+
+      async function loadRankingLists(client, targetResult, requestId) {
         const [bestResult, firstResult] = await Promise.all([
-          client.rpc("get_best_score_ranking", { p_game_slug: GAME_SLUG }),
-          client.rpc("get_first_try_ranking", { p_game_slug: GAME_SLUG })
+          client.rpc("get_best_score_ranking", { p_game_slug: GAME_SLUG, p_limit: 30 }),
+          client.rpc("get_first_try_ranking", { p_game_slug: GAME_SLUG, p_limit: 30 })
         ]);
 
         if (bestResult.error) throw bestResult.error;
         if (firstResult.error) throw firstResult.error;
-        if (lastResult !== targetResult) return;
+        if (lastResult !== targetResult || (requestId !== undefined && requestId !== rankingReadVersion)) return;
 
         lastResult.bestRanking = Array.isArray(bestResult.data) ? bestResult.data : [];
         lastResult.firstRanking = Array.isArray(firstResult.data) ? firstResult.data : [];
+        lastResult.rankingState = "ready";
 
         renderRankingList("best");
       }
@@ -1234,18 +1288,19 @@
 
         const list = isBest ? (lastResult.bestRanking || []) : (lastResult.firstRanking || []);
         rankingList.innerHTML = "";
+        if (lastResult.rankingState !== "ready") return;
 
         if (!list.length) {
           const p = document.createElement("p");
           p.className = "ranking-message";
-          p.textContent = "ランキングデータはまだありません。";
+          p.textContent = t("rankingEmpty");
           rankingList.appendChild(p);
           return;
         }
 
-        list.slice(0, 10).forEach((row, index) => {
-          const rank = pickField(row, ["rank_no", "rank", "ranking"], index + 1);
-          const name = pickField(row, ["display_name", "player_name", "name"], "ななし");
+        list.slice(0, 30).forEach((row, index) => {
+          const rank = row && Number.isSafeInteger(row.rank_no) && row.rank_no > 0 ? row.rank_no : null;
+          const name = pickField(row, ["display_name", "player_name", "name"], t("unrankedName"));
           const scoreText = pickRankingScoreText(row, type);
 
           const div = document.createElement("div");
@@ -1253,11 +1308,11 @@
 
           const rankEl = document.createElement("span");
           rankEl.className = "ranking-rank";
-          rankEl.textContent = "#" + rank;
+          rankEl.textContent = rank === null ? "—" : "#" + rank;
 
           const nameEl = document.createElement("span");
           nameEl.className = "ranking-name";
-          nameEl.textContent = String(name || "ななし");
+          nameEl.textContent = String(name || t("unrankedName"));
 
           const scoreEl = document.createElement("span");
           scoreEl.className = "ranking-score";
@@ -1278,35 +1333,15 @@
 
 
 
-      function openNameModal() {
-        loadSavedRankingName();
-        nameModal.classList.add("show");
-        nameModal.setAttribute("aria-hidden", "false");
-        window.setTimeout(() => {
-          if (playerNameInput) {
-            playerNameInput.focus();
-            playerNameInput.select();
-          }
-        }, 50);
-      }
-
-      function closeNameModal() {
-        nameModal.classList.remove("show");
-        nameModal.setAttribute("aria-hidden", "true");
-      }
-
-      function confirmNameAndStart() {
-        if (playerNameInput) playerNameInput.blur();
-        closeNameModal();
-
-        window.setTimeout(() => {
-          updateViewportHeight();
-          startGame();
-        }, 120);
-      }
 
 
+
+
+      let currentParticipation = Object.freeze({ name: "", participates: false });
       function startGame() {
+        lastResult = null; // A prior request may finish, but must not repaint this new play.
+        sound.stop(); soundStats = null; warned = false;
+        currentParticipation = YumeCommonState.snapshotParticipation(getPlayerName());
         saveRankingName();
         stopLoop();
         state = makeState();
@@ -1331,7 +1366,7 @@
           } else {
             clearInterval(countdownInterval);
             countdownInterval = null;
-            showCountdown("START");
+            showCountdown("start");
             countdownTimer = setTimeout(() => {
               if (!state) return;
               countdownOverlay.classList.remove("show");
@@ -1346,7 +1381,8 @@
       }
 
       function showCountdown(text) {
-        countdownOverlay.textContent = text;
+        sound.play(typeof text === "number" ? "countdown" : "start");
+        countdownOverlay.textContent = typeof text === "number" ? text : t(text);
         countdownOverlay.classList.remove("show");
         void countdownOverlay.offsetWidth;
         countdownOverlay.classList.add("show");
@@ -1690,6 +1726,13 @@
       function updateHud() {
         timeLeftText.textContent = Math.max(0, state.timeLeft).toFixed(1);
         scoreText.textContent = formatNumber(state.score);
+        if (soundStats) {
+          const priority = [["blueHits","hit"],["redHits","hit"],["sakeMissed","miss"],["redMissed","miss"],["satelliteMissed","miss"],["satelliteTapped","satellite"],["sakeCaught","pickup"],["redDestroyed","break"]];
+          const change = priority.find(([key]) => state.stats[key] > soundStats[key]);
+          if (change) sound.play(change[1]);
+        }
+        soundStats = Object.assign({}, state.stats);
+        if (!warned && state.timeLeft <= 10) { warned = true; sound.play("warning"); }
       }
 
       function endGame(resultType) {
@@ -1699,16 +1742,35 @@
         stopLoop();
         const result = buildResult(resultType);
         lastResult = result;
+        preserveResult(result);
+        const previousBest = getBestData();
         if (resultType === "clear") saveClearScore(result.score);
         if (resultType === "retire") saveRetireRecord();
+        sound.stop();
+        sound.play(resultType === "clear" ? (!previousBest.hasClear || result.score > previousBest.bestScore ? "best" : "clear") : "retire");
         renderResult(result);
         showScreen(resultScreen);
         submitScoreAndLoadRanking(result);
       }
 
+      function preserveResult(result) {
+        try {
+          const delivery = result.resultType !== "clear" ? "not-eligible" : !result.participation.participates ? "not-participating" : "uncertain";
+          const snapshot = {
+            resultType: result.resultType, elapsed: result.elapsed, timeLeft: result.timeLeft,
+            score: result.score, survivalScore: result.survivalScore, survivalSeconds: result.survivalSeconds,
+            stats: Object.assign({}, result.stats)
+          };
+          const retained = YumeCommonState.retainResult(clientStorage, snapshot, result.participation, delivery);
+          result.storageKey = retained.saved ? "saved" : "saveFailed";
+        } catch (_) { result.storageKey = "saveFailed"; }
+        document.getElementById("resultStorage").textContent = t(result.storageKey);
+      }
+
       function buildResult(resultType) {
         return {
           resultType: resultType,
+          participation: currentParticipation,
           elapsed: state.elapsed,
           timeLeft: state.timeLeft,
           score: Math.round(state.score),
@@ -1721,29 +1783,35 @@
       }
 
       function renderResult(result) {
-        rankingSubmitStatus.textContent = result.resultType === "clear" ? "結果確定後にランキングへ送信します。" : "リタイア時はランキング送信しません。";
+        rankingSubmitStatus.textContent = result.resultType === "clear" ? t("sending") : t("retireNoSend");
         rankingSummary.innerHTML = "";
         rankingList.innerHTML = "";
+        document.getElementById("rankingReadStatus").textContent = "";
+        document.getElementById("rankingRetryButton").disabled = false;
         bestRankingTab.classList.add("active");
         firstRankingTab.classList.remove("active");
 
+        renderResultDetails(result);
+      }
+
+      function renderResultDetails(result) {
         const isClear = result.resultType === "clear";
-        resultTitle.textContent = isClear ? "クリア" : "リタイア";
-        finalScoreBox.textContent = isClear ? formatNumber(result.score) + "pt" : "リタイア";
+        resultTitle.textContent = isClear ? t("clear") : t("retire");
+        finalScoreBox.textContent = isClear ? formatNumber(result.score) + " " + t("points") : t("retire");
 
         const rows = [];
-        rows.push(["経過時間", result.elapsed.toFixed(1) + "秒"]);
-        if (!isClear) rows.push(["その時点のスコア", formatNumber(result.score) + "pt"]);
-        if (isClear) rows.push(["最終スコア", formatNumber(result.score) + "pt"]);
-        rows.push(["生存スコア", formatNumber(result.survivalScore) + "pt"]);
-        rows.push(["青白い流星に当たった回数", result.stats.blueHits + "回"]);
-        rows.push(["赤い流星を壊した数", result.stats.redDestroyed + "回"]);
-        rows.push(["赤い流星を逃した数", result.stats.redMissed + "回"]);
-        rows.push(["赤い流星に当たった回数", result.stats.redHits + "回"]);
-        rows.push(["🛰️をタップした数", result.stats.satelliteTapped + "回"]);
-        rows.push(["🛰️を逃した数", result.stats.satelliteMissed + "回"]);
-        rows.push(["🍶を受け取った数", result.stats.sakeCaught + "回"]);
-        rows.push(["🍶を落とした数", result.stats.sakeMissed + "回"]);
+        rows.push([t("elapsed"), result.elapsed.toFixed(1) + " " + t("seconds")]);
+        if (!isClear) rows.push([t("atRetire"), formatNumber(result.score) + " " + t("points")]);
+        if (isClear) rows.push([t("final"), formatNumber(result.score) + " " + t("points")]);
+        rows.push([t("survivalScore"), formatNumber(result.survivalScore) + " " + t("points")]);
+        rows.push([t("blueHits"), result.stats.blueHits + " " + t("times")]);
+        rows.push([t("redDestroyed"), result.stats.redDestroyed + " " + t("times")]);
+        rows.push([t("redMissed"), result.stats.redMissed + " " + t("times")]);
+        rows.push([t("redHits"), result.stats.redHits + " " + t("times")]);
+        rows.push([t("satelliteTapped"), result.stats.satelliteTapped + " " + t("times")]);
+        rows.push([t("satelliteMissed"), result.stats.satelliteMissed + " " + t("times")]);
+        rows.push([t("sakeCaught"), result.stats.sakeCaught + " " + t("times")]);
+        rows.push([t("sakeMissed"), result.stats.sakeMissed + " " + t("times")]);
 
         resultDetails.innerHTML = "";
         rows.forEach((row) => {
@@ -1821,7 +1889,7 @@
             state.timeLeft += 4;
             state.stats.satelliteTapped += 1;
             removeAt(state.satellites, i);
-            showToast("🛰️タップ成功：+4秒");
+            showEventToast("satelliteBonus");
             return true;
           }
         }
@@ -1842,7 +1910,7 @@
         if (targetIndex >= 0) {
           state.stats.redDestroyed += 1;
           removeAt(state.red, targetIndex);
-          showToast("赤い流星を壊した");
+          showEventToast("redBroken");
           return true;
         }
         return false;
@@ -1921,64 +1989,41 @@
       }
 
       function formatNumber(value) {
-        return Math.round(value).toLocaleString("ja-JP");
+        return Math.round(value).toLocaleString(i18n.getLocale());
       }
 
       function makeGameShareText() {
-        return [GAME_TITLE, GAME_DESC, GAME_URL].join("\n");
+        return YumeShare.makeShareText(i18n.getLanguage(), GAME_URL, null);
       }
 
       function makeResultShareText(result) {
-        const lines = [];
-        const isClear = result.resultType === "clear";
-        lines.push(GAME_TITLE + " 結果");
-        lines.push("結果：" + (isClear ? "クリア" : "リタイア"));
-        if (isClear) lines.push("最終スコア：" + formatNumber(result.score) + "pt");
-        if (!isClear) lines.push("その時点のスコア：" + formatNumber(result.score) + "pt");
-        lines.push("生存時間：" + result.elapsed.toFixed(1) + "秒");
-        lines.push("生存スコア：" + formatNumber(result.survivalScore) + "pt");
-        lines.push("青白い流星に当たった回数：" + result.stats.blueHits + "回");
-        lines.push("赤い流星を壊した数：" + result.stats.redDestroyed + "回");
-        lines.push("赤い流星を逃した数：" + result.stats.redMissed + "回");
-        lines.push("赤い流星に当たった回数：" + result.stats.redHits + "回");
-        lines.push("🛰️をタップした数：" + result.stats.satelliteTapped + "回");
-        lines.push("🛰️を逃した数：" + result.stats.satelliteMissed + "回");
-        lines.push("🍶を受け取った数：" + result.stats.sakeCaught + "回");
-        lines.push("🍶を落とした数：" + result.stats.sakeMissed + "回");
-        lines.push("");
-        lines.push(GAME_DESC);
-        lines.push(GAME_URL);
-        return lines.join("\n");
+        return YumeShare.makeShareText(i18n.getLanguage(), GAME_URL, result);
       }
 
       function copyText(text) {
-        if (navigator.clipboard && window.isSecureContext) {
-          return navigator.clipboard.writeText(text).then(() => {
-            showToast("クリップボードにコピーしました");
-          }).catch(() => {
-            fallbackCopy(text);
-          });
-        }
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            return Promise.resolve(navigator.clipboard.writeText(text)).then(() => {
+              showToast(t("copied"));
+            }).catch(() => fallbackCopy(text));
+          }
+        } catch (_) { /* Manual fallback preserves the result. */ }
         fallbackCopy(text);
         return Promise.resolve();
       }
 
       function fallbackCopy(text) {
-        const area = document.createElement("textarea");
-        area.value = text;
-        area.setAttribute("readonly", "");
-        area.style.position = "fixed";
-        area.style.left = "-9999px";
-        document.body.appendChild(area);
-        area.select();
         try {
-          document.execCommand("copy");
-          showToast("クリップボードにコピーしました");
-        } catch (error) {
-          showToast("コピーできませんでした");
-        }
-        area.remove();
+          const area = document.getElementById("copyPanelText");
+          area.value = text;
+          document.getElementById("copyPanel").hidden = false;
+          area.focus();
+          area.select();
+          showToast(t("copyFailed"));
+        } catch (_) { showToast(t("copyFailed")); }
       }
+
+      function showEventToast(key) { showToast(t(key)); }
 
       function showToast(message) {
         toast.textContent = message;
@@ -2009,23 +2054,41 @@
 
       startButton.addEventListener("click", handleStartButton);
       restartButton.addEventListener("click", startGame);
-      nameStartButton.addEventListener("click", confirmNameAndStart);
-      nameCancelButton.addEventListener("click", closeNameModal);
       playerNameInput.addEventListener("keydown", (event) => {
-        if (event.key === "Enter") {
+        if (event.key === "Enter" && !event.isComposing && event.keyCode !== 229) {
           event.preventDefault();
-          confirmNameAndStart();
+          sound.gesture(event);
+          handleStartButton();
         }
       });
+      playerNameInput.addEventListener("change", saveRankingName);
       finishButton.addEventListener("click", showHome);
       retireButton.addEventListener("click", retireGame);
-      shareGameButton.addEventListener("click", () => copyText(makeGameShareText()));
+      let shareFocusTarget = null;
+      function handleShare(result) {
+        shareFocusTarget = result ? shareResultButton : shareGameButton;
+        try {
+          YumeShare.openShare(i18n.getLanguage(), GAME_URL, result,
+            (url, target) => window.open(url, target), text => { void copyText(text); });
+        } catch (_) { showToast(t("copyFailed")); }
+      }
+      function closeCopyPanel() {
+        sound.play("cancel");
+        document.getElementById("copyPanel").hidden = true;
+        if (shareFocusTarget && shareFocusTarget.isConnected) shareFocusTarget.focus();
+      }
+      document.getElementById("copyPanelClose").addEventListener("click", closeCopyPanel);
+      document.getElementById("copyPanel").addEventListener("keydown", event => {
+        if (event.key === "Escape") { event.preventDefault(); closeCopyPanel(); }
+      });
+      shareGameButton.addEventListener("click", () => handleShare(null));
       otherGamesButton.addEventListener("click", () => {
         window.location.href = LAB_URL;
       });
       shareResultButton.addEventListener("click", () => {
-        if (lastResult) copyText(makeResultShareText(lastResult));
+        if (lastResult) handleShare(lastResult);
       });
+      document.getElementById("rankingRetryButton").addEventListener("click", () => { void requestRankingsForResult(lastResult); });
       bestRankingTab.addEventListener("click", () => renderRankingList("best"));
       firstRankingTab.addEventListener("click", () => renderRankingList("first"));
 
@@ -2062,6 +2125,65 @@
         }, 250);
       });
 
+      const soundEnabled = document.getElementById("soundEnabled");
+      const soundVolume = document.getElementById("soundVolume");
+      soundEnabled.checked = sound.getState().enabled;
+      soundVolume.value = sound.getState().volume;
+      soundEnabled.addEventListener("change", event => { sound.setEnabled(soundEnabled.checked); sound.gesture(event); });
+      soundVolume.addEventListener("input", event => { sound.setVolume(Number(soundVolume.value)); sound.gesture(event); });
+      document.addEventListener("click", event => {
+        if (event.target === soundEnabled || event.target === soundVolume || event.target.closest('label[for="soundEnabled"],label[for="soundVolume"]') || stage.contains(event.target)) return;
+        sound.gesture(event);
+        if (event.target.closest("button,a,select") && event.target.id !== "copyPanelClose") sound.play("select");
+      }, true);
+      stage.addEventListener("pointerdown", event => sound.gesture(event), true);
+      document.addEventListener("visibilitychange", () => sound.visibility(document.hidden));
+      window.addEventListener("blur", () => sound.visibility(true));
+      window.addEventListener("focus", () => sound.visibility(document.hidden));
+      const languageSelect = document.getElementById("languageSelect");
+      for (const [id, label] of YumeI18n.languages) {
+        const option = document.createElement("option"); option.value = id; option.textContent = label; languageSelect.appendChild(option);
+      }
+      function applyLanguage() {
+        document.documentElement.lang = i18n.getLanguage();
+        languageSelect.value = i18n.getLanguage();
+        document.querySelectorAll("[data-i18n]").forEach(node => { node.textContent = t(node.dataset.i18n); });
+        updateBestScoreBox();
+        if (lastResult) {
+          renderResultDetails(lastResult);
+          renderRankingList(firstRankingTab.classList.contains("active") ? "first" : "best");
+          if (lastResult.summary) renderRankingSummary(lastResult.score, ...lastResult.summary);
+          renderRankingReadState(lastResult);
+          if (lastResult.deliveryKey) rankingSubmitStatus.textContent = t(lastResult.deliveryKey);
+          if (lastResult.storageKey) document.getElementById("resultStorage").textContent = t(lastResult.storageKey);
+        }
+        if (typeof restoreButton !== "undefined") refreshRecovery();
+        // Only display rendering; never call startGame/endGame/submit here.
+      }
+      languageSelect.addEventListener("change", () => { i18n.setLanguage(languageSelect.value); applyLanguage(); });
+      const restoreButton = document.getElementById("restoreResultButton");
+      function refreshRecovery() {
+        const retained = YumeCommonState.readRetainedResult(clientStorage);
+        restoreButton.hidden = retained.status !== "available";
+        restoreButton.textContent = t("result") + " — " + t("saved");
+      }
+      restoreButton.addEventListener("click", () => {
+        const retained = YumeCommonState.readRetainedResult(clientStorage);
+        if (retained.status !== "available") { refreshRecovery(); return; }
+        stopLoop(); clearEntities();
+        lastResult = Object.assign({}, retained.record.result, {
+          participation: Object.freeze(Object.assign({}, retained.record.participation)),
+          bestRanking: [], firstRanking: [], storageKey: "restored", deliveryKey: "restored"
+        });
+        renderResult(lastResult);
+        rankingSubmitStatus.textContent = t("restored");
+        document.getElementById("resultStorage").textContent = t("restored");
+        showScreen(resultScreen);
+        void requestRankingsForResult(lastResult);
+        // Restoring is read-only: no old score is sent, even if the home name changed.
+      });
+      refreshRecovery();
+      applyLanguage();
       updateViewportHeight();
       loadSavedRankingName();
       updateBestScoreBox();
