@@ -20,7 +20,9 @@
 
 **この検証は参加者本人性、同名参加者の分離、永続化、冪等性の証明ではありません。** 既存 API は名前ベースで、プレイ ID による重複排除を提供していません。結果を確認できない場合でもサーバー側で受理済みの可能性があり、無条件再送はできません。端末保存もサーバー受領の証拠ではありません。
 
-ランキング読取側は 6 列全体の厳密なスキーマ検証を行うものではありません。従来の表示得点／raw 得点の別名参照は残っており、数値フォーマッターは有限小数も受け付けます。今回の読取回帰確認は実際の `rank_no`・`first_score`・`best_score` を持つ行と、欠損値・不正値の表示を対象としています。
+ランキングの得点は、ベストタブでは `best_score`、初回タブでは `first_score` だけを参照します。数値型の符号付き 32 ビット整数（−2147483648〜2147483647）だけを受け付け、0 と負数も既存の単位・桁区切りで表示します。null・欠損・文字列・小数・範囲外は「—」とし、表示得点／raw 得点／汎用 score の別名や他方のタブの値に置き換えません。既存のベストタブ初期表示、返却順・同点順位・30 行制限は変更していません。
+
+これは読取 6 列全体の厳密なスキーマ検証ではありません。名前の既存別名参照は残り、`play_count` と `updated_at` の型検証は追加していません。得点ガードはランキング行に限定し、結果サマリーの共通フォーマッターや送信応答検証は変更していません。
 
 ## 維持するゲーム仕様
 
@@ -31,10 +33,20 @@
 依存追加はありません。Node.js の標準ライブラリだけで実行できます。各テストはファイルの静的解析、純粋なヘルパー、または限定的に取り出した関数をローカルの代替 DOM/RPC/音声と組み合わせます。ゲーム全体の実行、実通信、実スコア送信、ブラウザ起動は行いません。
 
 ```sh
-for test in tests/*.cjs; do node "$test" || exit 1; done
+node tests/ranking-strict-score.cjs
+node tests/ranking-contract.cjs
+node tests/ranking-presentation.cjs
+node tests/ranking-read.cjs
+node tests/ranking-caller.cjs
+node tests/normal8-submit.cjs
+node tests/stale-result.cjs
+node tests/game-invariants.cjs
+node tests/static-parse.cjs
 ```
 
 確認対象：言語キーと数値の整合、名前の固定、共有文、保存失敗、コピー代替、音声制御、ゲーム計算の保持、応答検証、古い応答の排除、ランキングの表示・読取専用再試行・30 行制限、JavaScript 構文と DOM 参照。
+
+当初の 16 スクリプトの実行記録と、今回の追加確認は区別しています。今回の得点修正では `ranking-strict-score.cjs` の 7 ケース（修正前は 6 失敗・正常値の対照 1 成功、修正後は 7 成功）を確認しました。失敗には不明値の記号を「-」から「—」へ統一するケースも含み、すべてが架空得点の再現という意味ではありません。これに既存の `ranking-contract.cjs`、`ranking-presentation.cjs`、`ranking-read.cjs`、`ranking-caller.cjs`、`normal8-submit.cjs`、`stale-result.cjs`、`game-invariants.cjs`、`static-parse.cjs` を加えた 9 スクリプトを個別に再実行しています。現在の全 17 スクリプトを今回まとめて再実行したという主張ではありません。
 
 ## 未確認・公開前後の作業
 

@@ -1263,19 +1263,9 @@
 
 
       function pickRankingScoreText(row, type) {
-        const isBest = type === "best";
-        const displayText = isBest
-          ? pickField(row, ["display_best_score", "display_score"], null)
-          : pickField(row, ["display_first_score", "display_score"], null);
-
-        if (displayText !== null && displayText !== undefined && String(displayText).trim() !== "") {
-          return String(displayText);
-        }
-
-        const rawScore = isBest
-          ? pickField(row, ["raw_best_score", "best_score", "score"], null)
-          : pickField(row, ["raw_first_score", "first_score", "score"], null);
-
+        const rawScore = row?.[type === "best" ? "best_score" : "first_score"];
+        if (typeof rawScore !== "number" || !Number.isInteger(rawScore)
+            || rawScore < -2147483648 || rawScore > 2147483647) return "—";
         return formatRankingScore(rawScore);
       }
 

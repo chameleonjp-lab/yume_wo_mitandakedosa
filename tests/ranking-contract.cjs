@@ -13,11 +13,11 @@ let lastResult=null,rankingReadVersion=1,calls=[];
 const run=s=>new vm.Script(s).runInContext(context,{timeout:1000});
 const value=s=>JSON.parse(run('JSON.stringify('+s+')'));
 const cases=[];function test(name,fn){cases.push([name,fn]);}
-test('unknown scores stay unknown, not Number(null) zero',()=>{for(const invalid of [null,undefined,'',' ',false,true,[],{},'not a score',Infinity,NaN]){context.raw=invalid;assert.equal(run('formatRankingScore(raw)'),'-',String(invalid));for(const type of ['best','first']){context.row={rank_no:1,display_name:'Alice',first_score:invalid,best_score:invalid,play_count:2,updated_at:'2026-01-01T00:00:00Z'};context.kind=type;assert.equal(run('pickRankingScoreText(row,kind)'),'-');}}});
+test('unknown scores stay unknown, not Number(null) zero',()=>{for(const invalid of [null,undefined,'',' ',false,true,[],{},'not a score',Infinity,NaN]){context.raw=invalid;assert.equal(run('formatRankingScore(raw)'),'-',String(invalid));for(const type of ['best','first']){context.row={rank_no:1,display_name:'Alice',first_score:invalid,best_score:invalid,play_count:2,updated_at:'2026-01-01T00:00:00Z'};context.kind=type;assert.equal(run('pickRankingScoreText(row,kind)'),'—');}}});
 test('real six-field rows preserve server ties and zero/negative scores in both tabs',()=>{
  context.rows=[{rank_no:1,display_name:'<Alice>',first_score:0,best_score:100,play_count:2,updated_at:'2026-01-01T00:00:00Z'},{rank_no:1,display_name:'Bob',first_score:-100,best_score:100,play_count:2,updated_at:'2026-01-01T00:00:00Z'},{rank_no:3,display_name:'Carol',first_score:null,best_score:null,play_count:2,updated_at:'2026-01-01T00:00:00Z'}];
- run("lastResult={rankingState:'ready',bestRanking:rows,firstRanking:rows};renderRankingList('best')");assert.deepEqual(value('rankingList.children.map(n=>n.children.map(c=>c.textContent))'),[['#1','<Alice>','100 points'],['#1','Bob','100 points'],['#3','Carol','-']]);
- run("renderRankingList('first')");assert.deepEqual(value('rankingList.children.map(n=>n.children[2].textContent)'),['0 points','-100 points','-']);
+ run("lastResult={rankingState:'ready',bestRanking:rows,firstRanking:rows};renderRankingList('best')");assert.deepEqual(value('rankingList.children.map(n=>n.children.map(c=>c.textContent))'),[['#1','<Alice>','100 points'],['#1','Bob','100 points'],['#3','Carol','—']]);
+ run("renderRankingList('first')");assert.deepEqual(value('rankingList.children.map(n=>n.children[2].textContent)'),['0 points','-100 points','—']);
 });
 test('missing or invalid rank_no stays unknown instead of inventing an ordinal',()=>{
  for(const rank of [undefined,null,'1',0,-1,1.5,Number.MAX_SAFE_INTEGER+1,Infinity]){
