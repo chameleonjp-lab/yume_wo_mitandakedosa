@@ -904,7 +904,7 @@
       const BEST_SCORE_LABEL = "最高スコア";
       const RED_TAP_BONUS = 34;
       const clientStorage = { getItem: key => window.localStorage.getItem(key), setItem: (key, value) => window.localStorage.setItem(key, value) };
-      const i18n = YumeI18n.createI18n({ dictionary: YumeDictionary, storage: clientStorage, browserLanguages: navigator.languages || [navigator.language] });
+      const i18n = YumeI18n.createI18n({ dictionary: YumeDictionary, storage: clientStorage, browserLanguages: [...(navigator.languages || []), navigator.language] });
       const t = (key, values) => i18n.text(key, values);
       const sound = YumeAudio.createAudio({ storage: clientStorage,
         createContext: () => { const Audio = window.AudioContext || window.webkitAudioContext; if (!Audio) throw new Error("Audio unavailable"); return new Audio(); },
