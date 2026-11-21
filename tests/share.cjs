@@ -7,7 +7,17 @@ const context=vm.createContext({}, {codeGeneration:{strings:false,wasm:false}});
 new vm.Script(readFileSync(join(__dirname,'../share.js'),'utf8')).runInContext(context,{timeout:1000});
 const api=context.YumeShare;
 const languages=['ja','en','es','pt-BR','zh-Hans','fr','de','ko','ru','it','zh-Hant','id','tr','vi','th'];
-const url='https://chameleonjp.codeberg.page/yume_wo_mitandakedosa/';
+const url='https://chameleonjp-lab.github.io/yume_wo_mitandakedosa/';
+const html=readFileSync(join(__dirname,'../index.html'),'utf8');
+assert.ok(html.includes('const GAME_URL = "'+url+'";'),'game share uses the Pages root');
+assert.ok(html.includes('<link rel="canonical" href="'+url+'"'));
+for(const [attr,key,value] of [
+ ['property','og:url',url],['property','og:image',url+'social-card.jpg'],
+ ['name','twitter:image',url+'social-card.jpg'],['name','twitter:card','summary_large_image'],
+ ['property','og:image:type','image/jpeg'],['property','og:image:width','1200'],['property','og:image:height','630']
+]) assert.equal(html.split(attr+'="'+key+'" content="'+value+'"').length,2,key);
+const card=readFileSync(join(__dirname,'../social-card.jpg'));
+assert.ok(card.includes(Buffer.from([255,192,0,17,8,2,118,4,176,3])),'1200 by 630 baseline JPEG');
 // Conservative scalar weights (emoji sequences may be overcounted), fixed t.co URL weight.
 function weight(body){const prefix=body.slice(0,-url.length);return 23+Array.from(prefix).reduce((n,c)=>{const p=c.codePointAt(0);return n+((p<=0x10ff||(p>=0x2000&&p<=0x200d)||(p>=0x2010&&p<=0x201f)||(p>=0x2032&&p<=0x2037))?1:2);},0);}
 let clock=1000;
