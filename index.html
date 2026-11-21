@@ -740,7 +740,34 @@
       }
     }
     .settings-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 12px 0; }
-    .settings-row select { min-height: 44px; max-width: 100%; }
+    .home-screen {
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+    }
+    .language-picker {
+      align-self: flex-start;
+      flex: 0 0 auto;
+      display: grid;
+      gap: 4px;
+      max-width: 100%;
+      font-size: 0.84rem;
+    }
+    .language-picker select {
+      min-height: 44px;
+      max-width: 100%;
+      padding: 6px 10px;
+      border: 1px solid rgba(255, 255, 255, 0.64);
+      border-radius: 8px;
+      color: #fff;
+      background: #101a31;
+      font: inherit;
+    }
+    .language-picker select:focus-visible {
+      outline: 2px solid #9ed8ff;
+      outline-offset: 2px;
+    }
     .x-share, .x-share:hover, .x-share:active, .x-share:focus-visible {
       background: #000; color: #fff; min-height: 44px; white-space: normal;
     }
@@ -751,6 +778,10 @@
 <body>
   <main id="app" class="app">
     <section id="homeScreen" class="screen home-screen active">
+      <div class="language-picker">
+        <label for="languageSelect" data-i18n="language">言語</label>
+        <select id="languageSelect"></select>
+      </div>
       <div class="card home-card">
         <p class="eyebrow" data-i18n="tagline">60秒から始まる耐久スコアゲーム</p>
         <h1>🌠夢を見たんだけどさ🌠</h1>
@@ -765,8 +796,6 @@
           <p class="small-note" data-i18n="survivalRule">生き残ると1秒ごとに +100pt。ベストスコアはこのブラウザ内に保存されます。</p>
         </div>
         <div class="settings-row">
-          <label for="languageSelect" data-i18n="language">言語</label>
-          <select id="languageSelect"></select>
           <label for="soundEnabled"><input id="soundEnabled" type="checkbox" checked><span data-i18n="sound">効果音</span></label>
           <label for="soundVolume" data-i18n="volume">音量</label>
           <input id="soundVolume" type="range" min="0" max="1" step="0.05" value="0.3">
@@ -840,7 +869,7 @@
   <section id="copyPanel" hidden aria-labelledby="copyPanelTitle" style="position:fixed;inset:10%;z-index:1000;background:#101a31;padding:16px;overflow:auto">
     <h2 id="copyPanelTitle" data-i18n="copyLabel">共有文</h2>
     <p id="copyPanelHint" data-i18n="copyFailed">コピーできませんでした。共有文を選んでコピーしてください。</p>
-    <textarea id="copyPanelText" readonly style="width:100%;min-height:12em"></textarea>
+    <textarea id="copyPanelText" aria-labelledby="copyPanelTitle" readonly style="width:100%;min-height:12em"></textarea>
     <button id="copyPanelClose" type="button" class="secondary-button" data-i18n="copyClose">閉じる</button>
   </section>
   <div id="toast" class="toast" aria-live="polite"></div>
@@ -2148,7 +2177,7 @@
       window.addEventListener("focus", () => sound.visibility(document.hidden));
       const languageSelect = document.getElementById("languageSelect");
       for (const [id, label] of YumeI18n.languages) {
-        const option = document.createElement("option"); option.value = id; option.textContent = label; languageSelect.appendChild(option);
+        const option = document.createElement("option"); option.value = id; option.lang = id; option.textContent = label; languageSelect.appendChild(option);
       }
       function applyLanguage() {
         document.documentElement.lang = i18n.getLanguage();
