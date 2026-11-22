@@ -10,7 +10,13 @@
   function fromLocale(input){
     if(typeof input!=='string')return null;
     const parts=input.trim().toLowerCase().replaceAll('_','-').split('-');
-    if(parts[0]==='zh'){if(parts.includes('hant'))return 'zh-Hant';if(parts.includes('hans'))return 'zh-Hans';return parts.some(p=>['tw','hk','mo'].includes(p))?'zh-Hant':'zh-Hans';}
+    if(parts[0]==='zh'){
+      const extension=parts.findIndex((part,index)=>index>0&&part.length===1);
+      const core=extension<0?parts:parts.slice(0,extension);
+      const script=core.find(part=>part==='hans'||part==='hant');
+      if(script)return script==='hant'?'zh-Hant':'zh-Hans';
+      return core.some(part=>['tw','hk','mo'].includes(part))?'zh-Hant':'zh-Hans';
+    }
     if(parts[0]==='pt')return 'pt-BR';
     return languages.some(l=>l[0]===parts[0])?parts[0]:null;
   }

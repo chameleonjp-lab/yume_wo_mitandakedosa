@@ -26,3 +26,16 @@ assert.equal(i.setLanguage('unknown'),false);assert.equal(i.getLanguage(),'en');
 assert.equal(api.createI18n({dictionary,storage:{getItem(){throw Error('storage');}},browserLanguages:['xx']}).getLanguage(),'en');
 const memory=api.createI18n({dictionary,storage:{getItem(){return null;},setItem(){throw Error('quota');}},browserLanguages:['ja-JP']});assert.equal(memory.setLanguage('en'),false);assert.equal(memory.getLanguage(),'en');
 console.log('PASS: locale mapping, saved preference, fallback, storage failure; all 15 × 71 keys/placeholders/rule numerals present, naturalness/browser remain pending');
+
+const html=readFileSync(join(__dirname,'../index.html'),'utf8');
+assert.match(html, /id="homeScreen"[^>]*>\s*<div class="language-picker">\s*<label for="languageSelect" data-i18n="language">[^<]+<\/label>\s*<select id="languageSelect"><\/select>/);
+assert.equal((html.match(/id="languageSelect"/g)||[]).length,1);
+assert.match(html,/\.home-screen\s*\{\s*flex-direction:\s*column;/);
+assert.match(html,/\.language-picker\s*\{[^}]*align-self:\s*flex-start;/);
+assert.match(html,/\.language-picker select\s*\{[^}]*min-height:\s*44px;/);
+assert.match(html,/option\.lang = id;/);
+assert.match(html,/id="copyPanelText"[^>]*aria-labelledby="copyPanelTitle"/);
+for(const [, key] of html.matchAll(/data-i18n="([^"]+)"/g)){
+ for(const [locale,d] of Object.entries(dictionary)) assert.equal(typeof d[key],'string',locale+':'+key);
+}
+console.log('PASS: home upper-left language selector structural/keyboard affordances, localized accessibility labels, 15 dictionaries cover all declared UI keys');
