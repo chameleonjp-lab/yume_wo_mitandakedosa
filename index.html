@@ -1408,6 +1408,7 @@
               countdownOverlay.textContent = "";
               state.countingDown = false;
               state.running = true;
+              if (globalThis.location?.origin === "https://chameleonjp-lab.github.io") void import(/* @vite-ignore */ "https://chameleonjp-lab.github.io/chameleonjp_lab/play-start.js").then(module => module.recordPlayStart("yume_wo_mitandakedosa")).catch(() => {});
               lastStamp = performance.now();
               frameId = requestAnimationFrame(updateGame);
             }, 450);

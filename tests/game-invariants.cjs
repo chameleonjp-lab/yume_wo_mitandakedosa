@@ -20,6 +20,8 @@ function originalMathBody(name) {
   if(name==='tryTapSatellite')body=body.replace('showEventToast("satelliteBonus");','showToast("🛰️タップ成功：+4秒");');
   if(name==='tryTapRed')body=body.replace('showEventToast("redBroken");','showToast("赤い流星を壊した");');
   if(name==='startCountdown')body=body.replace('showCountdown("start");','showCountdown("START");');
+  // The exact count-only hook leaves the approved timer and game rules untouched.
+  if (name === 'startCountdown') body = body.replace("              if (globalThis.location?.origin === \"https://chameleonjp-lab.github.io\") void import(/* @vite-ignore */ \"https://chameleonjp-lab.github.io/chameleonjp_lab/play-start.js\").then(module => module.recordPlayStart(\"yume_wo_mitandakedosa\")).catch(() => {});\n", '');
   return body;
 }
 for (const [name, hash] of Object.entries(manifest.functions)) {
